@@ -10,6 +10,7 @@ get_header();
 </section>
 
 <section id="content">
+	<h2 class="nd">GORO-EV.comのコンテンツ</h2>
 	<div class="wrapper">
 		<?php
 		$top_slugs = array('move', 'view', 'virtual', 'shop', 'explore');
@@ -24,7 +25,7 @@ get_header();
 					<?php endif; ?>
 				</div>
 				<div class="txtbox">
-					<h3><?php echo esc_html($item['pagename_upper'] . '：' . $item['title']); ?></h3>
+					<h3><?php echo esc_html($item['pagename_upper']); ?><span><?php echo esc_html($item['title']); ?></span></h3>
 					<p><?php echo nl2br(esc_html($item['excerpt'])); ?></p>
 					<p><a href="<?php echo esc_url($item['link']); ?>">詳しく見る</a></p>
 				</div>
@@ -42,7 +43,7 @@ if ($items):
 	?>
 	<section id="information">
 		<div class="wrapper">
-			<h2>お知らせ・トピックス</h2>
+			<h2>News & Topics <span>お知らせ・トピックス</span></h2>
 			<ul class="information_list">
 				<?php foreach ($items as $item): ?>
 					<li>

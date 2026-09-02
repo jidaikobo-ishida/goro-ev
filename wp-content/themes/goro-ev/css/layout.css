@@ -206,18 +206,64 @@ ul li::marker {
 	gap: 0;
 }
 
+#mainmenu a span {
+	line-height: 1.3rem;
+}
+
 #mainmenu a span.en {
 	font-weight: bold;
-	font-style: normal;
+	font-style: italic;
 	font-size: 1.1rem;
+	order: 1;
+}
+
+#mainmenu a::after {
+	content: '';
+	width: 100%;
+	height: 4px;
+	background: #fff;
+	order: 2;
+	transition: 0.3s;
+}
+
+#mainmenu a:hover::after,
+#mainmenu a.current::after {
+	background: #fff500;
 }
 
 #mainmenu a span.jp {
 	font-size: 0.8rem;
+	order: 3;
 }
 
 /* main_column */
 #site-content {}
+
+section {
+	padding: 3rem 0;
+}
+
+.home #content h3,
+.home #information h2,
+.home #about h2 {
+	font-size: 1.8rem;
+	font-style: italic;
+	display: flex;
+	gap: 2rem;
+	justify-content: flex-start;
+	align-items: baseline;
+}
+
+.home #content h3 span,
+.home #information h2 span,
+.home #about h2 span {
+	font-size: 1rem;
+	font-style: normal;
+}
+
+section#information {
+	background-color: #f0fcfb;
+}
 
 /* footer */
 #site-footer {}

@@ -1,0 +1,100 @@
+<?php
+
+namespace Dashi\Core\Posttype;
+
+class CustomFieldValueResolver
+{
+    /**
+     * カスタムフィールド描画用の値を決める
+     *
+     * @param object $object
+     * @param array $value
+     * @return array{value:mixed, meta_key:string}
+     */
+    public static function resolve($object, $value)
+    {
+        $key = $value['id'];
+        $meta_key = $key;
+        $resolved = isset($value['args']['value']) ? $value['args']['value'] : '';
+
+        if (static::usesArrayValue($key, $value))
+        {
+            $resolved = static::resolveArrayValue($object, $key, $resolved);
+            if (preg_match("/\[(\d*?)\]/", $key))
+            {
+                $meta_key = preg_replace("/\[\d*?\]/", '', $key);
+            }
+        }
+        elseif (isset($object->{$key}) && ! is_null($object->{$key}))
+        {
+            $resolved = $object->{$key};
+        }
+
+	        return array(
+	            'value' => $resolved,
+	            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- SQL用途ではなく配列キー名。
+	            'meta_key' => $meta_key,
+	        );
+    }
+
+    /**
+     * 配列値として扱うべき定義かを確認する
+     *
+     * @param string $key
+     * @param array $value
+     * @return bool
+     */
+    private static function usesArrayValue($key, $value)
+    {
+        if (!isset($value['args']['type']))
+        {
+            return false;
+        }
+
+        return
+            $value['args']['type'] == 'checkbox' ||
+            ($value['args']['type'] == 'select' && isset($value['args']['attrs']['multiple'])) ||
+            strpos($key, '[') !== false;
+    }
+
+    /**
+     * 配列系フィールドの値を決める
+     *
+     * @param object $object
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    private static function resolveArrayValue($object, $key, $default)
+    {
+        $tmp = '';
+        $meta_key = $key;
+        $tmps = array();
+
+	        if (preg_match("/\[(\d*?)\]/", $key, $ms))
+	        {
+	            $meta_key = preg_replace("/\[\d*?\]/", '', $key);
+	            $copy_original_id = filter_input(INPUT_GET, 'dashi_copy_original_id', FILTER_VALIDATE_INT);
+	            $copy_nonce = filter_input(INPUT_GET, '_dashi_copy_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	            if (
+	                $copy_original_id &&
+	                is_string($copy_nonce) &&
+	                wp_verify_nonce(sanitize_text_field(wp_unslash($copy_nonce)), 'dashi_copy_post')
+	            ) {
+	                $tmps = get_post_meta($copy_original_id, $meta_key, false);
+	            }
+	            elseif (is_object($object) && isset($object->ID))
+	            {
+                $tmps = get_post_meta($object->ID, $meta_key, false);
+            }
+
+            $tmp = isset($tmps[$ms[1]]) ? $tmps[$ms[1]] : '';
+        }
+        else
+        {
+            $tmp = is_object($object) ? get_post_meta($object->ID, $meta_key, false) : '';
+        }
+
+        return ! empty($tmp) ? $tmp : $default;
+    }
+}

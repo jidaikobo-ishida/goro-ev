@@ -1,0 +1,26 @@
+/* http://jigsaw.w3.org/css-validator/ */
+
+/* postdivrich */
+
+.post-type-POSTTYPE #postdivrich,
+.post-type-POSTTYPE #view-post-btn,
+.post-type-POSTTYPE #preview-action
+{
+	display: none;
+}
+
+.post-type-vacancy_day #days.postbox .dashi_custom_fields_label,
+.post-type-vacancy_short #period.postbox .dashi_custom_fields_label
+{
+	display: inline-block;
+}
+
+#wp-content-editor-container .wp-editor-area {
+	font-family: Consolas, Monaco, "メイリオ", "ＭＳ Ｐゴシック", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Osaka, sans-serif;
+}
+
+#gn-genrediv,
+#xmlsf_news_section
+{
+	display: none !important;
+}

@@ -1,0 +1,55 @@
+/* http://jigsaw.w3.org/css-validator/ */
+
+/* search_results */
+
+.search_results dt
+{
+	font-weight: bold;
+	margin: 0;
+	padding: 20px 0 10px;
+}
+
+.search_results dd
+{
+	font-size: 90%;
+	margin: 0;
+	padding: 10px;
+	background-color: #efefef;
+}
+
+/* screen-reader-text */
+
+.screen-reader-text
+{
+	position: absolute;
+	clip: rect(1px 1px 1px 1px);
+	clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* outline_hover */
+
+.outline_hover
+{
+	outline: 1px dashed #aaa;
+	outline-offset: -2px;
+}
+
+/* WordPress */
+
+.aligncenter
+{
+	display: block;
+	margin: 0 auto;
+}
+
+.alignright
+{
+	float: right;
+	margin:0 0 20px 20px;
+}
+
+.alignleft
+{
+	float: left;
+	margin:0 20px 20px 0;
+}

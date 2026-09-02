@@ -1,0 +1,15 @@
+@charset "utf-8";
+/*
+Theme Name: goro-ev
+Author: jidaikobo
+Description: Theme for Goro ev station.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+*/
+
+@import url('css/common/base.css');
+@import url('css/common/print.css');
+@import url('css/common/wp.css');
+@import url('css/wp.css');
+@import url('css/layout.css');
+@import url('css/print.css');

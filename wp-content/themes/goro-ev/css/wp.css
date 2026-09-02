@@ -1,0 +1,239 @@
+@charset "utf-8";
+
+/* gallery */
+
+.gallery::after
+{
+	clear: both;
+	content: '';
+	display: block;
+}
+
+.gallery
+{
+	width: 100%;
+}
+
+.gallery-item
+{
+	width: calc(33.33% - 20px);
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 10px 20px;
+}
+
+@media all and (min-width: 500px)
+{
+	.gallery-columns-2 .gallery-item
+	{
+		width: calc(50% - 20px);
+	}
+}
+
+.gallery-columns-4 .gallery-item
+{
+	width: calc(25% - 20px);
+}
+
+@media all and (max-width: 700px)
+{
+	.gallery-item
+	{
+		width: calc(50% - 20px);
+	}
+}
+
+@media all and (max-width: 500px)
+{
+	.gallery-item
+	{
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	.gallery-columns-4
+	{
+		width: calc(50% - 20px);
+	}
+}
+
+/* alignleft, alignright */
+
+@media all and (max-width: 520px)
+{
+	.alignleft,
+	.alignright,
+	.alignleft,
+	.alignright
+	{
+		display: block;
+		float: none;
+		margin: 10px auto;
+		max-width: 100%;
+		text-align: center;
+	}
+}
+
+/* gallery css */
+
+/* col */
+.col,
+.col2,
+.col3,
+.col4,
+.col_full,
+.gallery-columns-2,
+.gallery-columns-3,
+.gallery-columns-4,
+.wp-block-group.person_profile > .wp-block-group__inner-container {
+	display: flex;
+	justify-content: space-between;
+	padding: 0;
+	list-style: none;
+	align-items: stretch;
+	width: 100%;
+}
+.col.center,
+.col2.center {
+	justify-content: center;
+	column-gap: calc( min(40px, var( --base_margin ))/2 - .6rem ) ;
+}
+.col2,
+.col3,
+.col4,
+.col_full,
+.gallery-columns-3,
+.gallery-columns-4 {
+	flex-wrap: wrap;
+	margin-block: 0;
+	row-gap: calc( min(40px, var( --base_margin ))/2 - .6rem ) ;
+}
+.col3::after,
+.col3::before,
+.col4::before,
+.col4::after,
+.gallery-columns-3::before,
+.gallery-columns-3::after,
+.gallery-columns-4::before,
+.gallery-columns-4::after {
+	content: '';
+	display: block;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+.col3::before,
+.col4::before,
+.gallery-columns-3::before,
+.gallery-columns-4::before {
+	-ms-flex-order: 1;
+	-webkit-order: 1;
+	order: 1;
+}
+.col3:has(li:nth-child(3n):last-child)::before,
+.col3:has(li:nth-child(3n-1):last-child)::before,
+.col3:has(li:nth-child(3n):last-child)::after {
+    content: none;
+}
+
+.col > * >:last-child,
+.col2 > * >:last-child,
+.col3 > * >:last-child,
+.col4 > * >:last-child,
+.col_full > * >:last-child,
+.gallery-columns-3 > * >:last-child,
+.gallery-columns-4 > * >:last-child {
+	margin-bottom: 0;
+}
+.col2 > *,
+.gallery-columns-2 > * {
+	width: calc( 50% - var(--base_margin)*0.8/2 );
+}
+.col3 > *,
+.col3::after,
+.col3::before,
+.gallery-columns-3 > .gallery-item,
+.gallery-columns-3::after,
+.gallery-columns-3::before {
+	width: calc( (100% - var(--base_margin) )/3 );
+}
+.col3.narrow,
+.gallery-columns-3.narrow {
+	row-gap: calc( var( --base_margin )/2 - .5rem ) ;
+}
+.col3.narrow > *,
+.col3.narrow::after,
+.col3.narrow::before,
+.gallery-columns-3.narrow > .gallery-item,
+.gallery-columns-3.narrow::after,
+.gallery-columns-3.narrow::before {
+	width: calc( (100% - 6% )/3 );
+}
+.col4 > *,
+.col4::before,
+.col4::after,
+.gallery-columns-4 > .gallery-item,
+.gallery-columns-4::before,
+.gallery-columns-4::after {
+	width: calc( ( 100% - var(--base_margin))/4 );
+}
+.col_full > * {
+	margin: 0 10px 20px;
+	width: 100%;
+}
+.col > *:first-child,
+.col > .content > *:first-child,
+.box > .content > *:first-child {
+	margin-top: 0;
+}
+.col > *:last-child,
+.col > .content > *:last-child,
+.box > .content > *:last-child {
+	margin-bottom: 0;
+}
+.col img,
+.col2 img,
+.col3 img,
+.col4 img,
+.col_full img,
+.gallery img {
+		vertical-align: bottom;
+}
+@media all and (max-width: 640px){
+	/* col */
+	.col,
+	.col3,
+	.gallery-columns-3 {
+		row-gap: calc( var(--base_margin)*2 );
+	}
+	.col > *,
+	.col3 > *,
+	.gallery-columns-3 > .gallery-item {
+		width: 100% !important;
+	}
+	.col2 .thumb {
+		text-align: center;
+	}
+	.col3.narrow > *,
+	.gallery-columns-3.narrow > .gallery-item {
+		width: calc( (100% - 3.5% )/2 );
+	}
+	.col3::before,
+	.col3::after,
+	.col4:before,
+	.col4::after,
+	.gallery-columns-3::before,
+	.gallery-columns-3::after,
+	.gallery-columns-4:before,
+	.gallery-columns-4::after {
+			content: none;
+	}
+	.col > * {
+		margin-left: auto !important;
+		margin-right: auto !important;
+	}
+	.col img {
+		display: block;
+		margin: 25px auto;
+	}
+}

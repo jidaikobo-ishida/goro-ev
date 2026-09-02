@@ -1,0 +1,630 @@
+@charset "utf-8";
+/**
+ * [ MEMO ]
+ * .tbl* に tfoot 書く
+ * hide-if-no-js
+ * accessibility.css => alt がない画像に border を出すとか
+ */
+
+/* http://jigsaw.w3.org/css-validator/ */
+
+/* === text === */
+
+body
+{
+	margin: 0;
+	padding: 0;
+}
+main,
+header,
+footer,
+nav,
+aside,
+section,
+article
+{
+	display: block;
+}
+
+/* === abbr , acronym === */
+
+abbr
+{
+	color: inherit;
+	font-style: normal;
+	border: dotted #333;
+	border-width: 0 0 1px;
+	cursor: help;
+}
+
+/* === blockquote === */
+
+blockquote
+{
+	box-sizing: border-box;
+	margin: 1em;
+	padding: 0 10px;
+	color: #111;
+	background-color: #fefefe;
+	border: 1px #bbb dashed;
+}
+
+/* === code === */
+
+code
+{
+	font-family: 'monospace';
+}
+
+/* === kbd === */
+
+kbd /* キーボードのキー */
+{
+	margin: 0 .1em;
+	padding: 0 2px;
+	border-style: solid;
+	border-width: 1px;
+	font-family: 'monospace';
+}
+
+/* === explanation === */
+
+.explanation
+{
+	border-color: #333;
+	border-style: dotted;
+	border-width: 0 0 1px;
+	cursor: help;
+}
+
+/* === clear , hidden === */
+
+.nd,
+.nodisplay
+{
+	display: none;
+}
+
+.hd,
+.hidden
+{
+	visibility: hidden;
+}
+
+.hl,
+.hiddenlink,
+.hiddenmessage,
+.forscreenreader,
+.skip
+{
+	position: absolute;
+}
+
+.hl:not(:focus),
+.hiddenlink:not(:focus),
+.hiddenmessage:not(:focus),
+.forscreenreader:not(:focus),
+.skip:not(:focus)
+{
+	clip: rect(1px, 1px, 1px, 1px);
+	height: 1px;
+	overflow: hidden;
+	white-space: nowrap; /* added line */
+	width: 1px;
+}
+
+.hl:focus,
+.hiddenlink:focus,
+.hiddenmessage:focus,
+.forscreenreader:focus,
+.skip:focus
+{
+	display: inline-block;
+	padding: 5px 10px;
+	background-color: #fff;
+	color: #333;
+	text-decoration: none;
+}
+
+.div,
+.clear
+{
+	clear: both;
+}
+
+.nc,
+.noclear
+{
+	clear: none !important;
+}
+
+.div,
+.div
+{
+	clear: both;
+	visibility: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+/* === clearfix === */
+
+.clearfix::after
+{
+	content: "";
+	display: block;
+	clear: both;
+	height: 0;
+}
+
+/* === ul , ol (.nlm) === */
+
+.nlm,
+.nlm
+{
+	list-style-image: none !important;
+	list-style: none;
+	padding: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.nlm > li,
+.nlm > li
+{
+	padding: 0;
+	margin: 0;
+}
+
+/* === .cmt === */
+
+.cmt
+{
+	color: #111;
+	background-color: #f8f8f8;
+	margin: 1em 0;
+	padding: 7px 15px;
+	border: 1px solid #bbb;
+	width: auto;
+}
+
+.cmt > :first-child
+{
+	margin-top: 0;
+}
+
+.cmt > :last-child
+{
+	margin-bottom: 0;
+}
+
+/* === ul,ol (.cmt) === */
+
+.cmt,
+.cmt
+{
+	padding-left: 40px;
+}
+
+/* === .cmt === */
+
+.cmt
+{
+	color: #111;
+	background-color: #fff;
+	padding: 0 15px;
+	border-bottom: #bbb 1px solid;
+	border-left: #bbb 1px solid;
+	border-right: #bbb 1px solid;
+	width: auto;
+}
+
+.cmt dt
+{
+	line-height: 1;
+	position: relative;
+	color: #111;
+	background-color: #f8f8f8;
+	margin: 0 -15px;
+	padding: 10px 10px;
+	border-top: #bbb 1px solid;
+	border-bottom: #bbb 1px dotted;
+}
+
+.cmt dd
+{
+	position: relative;
+	margin: 0 -15px 0;
+	padding: 10px 10px 5px;
+}
+
+/* === p , div , pre , ul , ol (.cmt) === */
+
+.cmt .il,
+.cmt .il
+{
+	margin-left: 0;
+}
+
+.cmt
+{
+	overflow: auto;
+}
+
+.cmt2
+{
+	white-space: pre-wrap;
+}
+
+/* === cite === */
+
+.jp,
+.ja,
+cite[lang$="ja"]
+{
+	font-style: normal;
+}
+
+.en,
+.en,
+cite[lang$="en"],
+.foreign
+{
+	font-style: italic;
+}
+
+/* === .pre === */
+
+.pre
+{
+	border: 1px #bbb solid;
+	padding: 5px;
+	background-color: #fefefe;
+	width: 95%;
+}
+
+/* === forms - base === */
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select
+{
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	font-size: 1.1rem;
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--graycolor);
+	border-radius: 4px;
+	color: inherit;
+}
+
+input[type="checkbox"],
+input[type="radio"]
+{
+	font-size: 1.1rem;
+}
+
+
+/* === forms - bttns === */
+
+.bttn
+{
+	-webkit-appearance: none;
+	box-sizing: border-box;
+	font-family: sans-serif;
+	padding: 5px 15px ;
+	margin: 0 5px 0 0;
+	background-color: #eee;
+	border: 1px solid #999;
+	color: #222;
+	line-height: 1.5;
+	font-size: 110%;
+	border-radius: 4px;
+	text-decoration: none;
+	font-weight: normal;
+	display: inline-block;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+.bttn:hover,
+.bttn:focus
+{
+	border-color: #111;
+}
+
+.bttn:active
+{
+	border-width: 2px;
+	padding: 4px 14px ;
+}
+
+/* === forms - mainbttn === */
+
+.bttn.main,
+.bttn.primary
+{
+	font-weight: bold;
+	border: 1px solid #ccc;
+	background-color: #007acb;
+	color: #fff;
+}
+
+.bttn.main:hover,
+.bttn.primary:hover,
+.bttn.main:focus,
+.bttn.primary:focus
+{
+	border: 1px solid #007acb;
+	background-color: #fff;
+	color: #007acb;
+}
+
+.bttn.main:active
+{
+	border: 2px solid #007acb;
+}
+
+.wide
+{
+	box-sizing: border-box;
+	width: 100%;
+	height: 12em;
+}
+
+.src
+{
+	line-height: 1.6;
+	font-family: monospace;
+	white-space: pre;
+}
+
+form .exp,
+form .explanation
+{
+	font-size: 90%;
+	display: block;
+}
+
+/* === form - label of checkboxes and radio === */
+
+.label_fb label,
+.label_fb
+{
+	display: inline-block;
+	white-space:nowrap;
+	padding: 3px 3px 3px 2px;
+	margin-right: 5px;
+}
+
+.label_fb:hover,
+.label_fb:hover
+{
+	background-color: #e8e8e8;
+}
+
+.disabled label,
+.disabled
+{
+	opacity: .5;
+}
+
+.disabled label:hover,
+.disabled:hover
+{
+	background-color: transparent !important;
+}
+
+/* === .tbl === */
+
+.tbl
+{
+	margin: 5px 0 10px;
+	box-sizing: border-box;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-top: 1px #bbb solid;
+	border-left: 1px #bbb solid;
+}
+
+.tbl th,
+.tbl td
+{
+	text-align: left;
+	padding: 8px 10px;
+	border-bottom: 1px #bbb solid;
+	border-right: 1px #bbb solid;
+}
+
+.tbl th
+{
+	text-align: left;
+	background-color: #f8f8f8;
+/*	white-space: nowrap;*/
+	font-weight: bold;
+	color: #111;
+}
+
+.tbl thead th,
+.tbl tfoot th,
+.tbl tfoot td
+{
+	background-color: #eee;
+	color: #111;
+}
+
+.tbl th > *:first-child,
+.tbl td > *:first-child
+{
+	margin-top: 0;
+}
+
+.tbl th > *:last-child,
+.tbl td > *:last-child
+{
+	margin-bottom: 0;
+}
+
+/* === .tbl1 === */
+
+.tbl1
+{
+	border-spacing: 0;
+	box-sizing: border-box;
+	width: 100%;
+	border-collapse: collapse;
+	border-top: 1px #bbb solid;
+	border-left: none;
+}
+
+.tbl1 th,
+.tbl1 td
+{
+	text-align: left;
+	padding: 8px 10px;
+	border-bottom: 1px #bbb solid;
+	border-right: none;
+}
+
+.tbl1 thead th
+{
+	color: #111;
+	background-color: #ded9d1;
+}
+
+.tbl1 th
+{
+	color: #111;
+	background-color: #eee;
+}
+
+.tbl1 td
+{
+	color: #111;
+	background-color: #fff;
+}
+
+/* === .tbl2 === */
+
+.tbl2
+{
+	box-sizing: border-box;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	width: 100%;
+	background-color: #fff;
+}
+
+.tbl2 th,
+.tbl2 td
+{
+	text-align: left;
+	padding: 8px 10px;
+}
+
+.tbl2 thead th
+{
+	color: #111;
+	background: #e8e8e0;
+	font-weight: bold;
+	border-top: 1px #ccc solid;
+	border-bottom: 1px #ccc solid;
+}
+
+.tbl2 tr:nth-child(even),
+.tbl2.even tr:nth-child(even)
+{
+	background: #f4f4ea;
+}
+
+.tbl2 tr:nth-child(odd),
+.tbl2.even tr:nth-child(odd)
+{
+	background: #fff;
+}
+
+.tbl2.odd tr:nth-child(odd)
+{
+	background: #fff;
+}
+
+.tbl2.odd tr:nth-child(even)
+{
+	background: #f4f4ea;
+}
+
+.tbl2 th
+{
+	font-weight: normal;
+	color: #111;
+}
+
+.tbl2 td
+{
+	color: #111;
+}
+
+/* .list_tableにしたい */
+
+.list_table th,
+.list_table td
+{
+	padding: 5px 3px 0 0;
+}
+
+.list_table th
+{
+	vertical-align: top;
+	font-weight: normal !important;
+}
+
+/* === .lb img === */
+
+.lb img
+{
+	outline: 1px #eee solid;
+	outline-offset: -1px;
+}
+
+.lb:hover img
+{
+	outline: 1px #58b dashed;
+}
+
+/* === align right (.cite , .sig , .cf) === */
+
+.cite,
+.sig,
+.cf
+{
+	text-align: right;
+	list-style: none;
+	clear: both;
+}
+
+/* === .subtitle === */
+
+.subtitle
+{
+	font-size: 90%;
+	font-weight: normal;
+}
+
+/* === .date === */
+
+.date
+{
+	display: inline-block;
+	font-size: 85%;
+	color: #555;
+}

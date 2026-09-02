@@ -1,0 +1,39 @@
+# Environment files
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE / Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# WordPress data / DB storage (if mapped locally)
+mysql_data/
+wp_data/
+
+# WordPress core files / uploads
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/backup-db/
+*.log
+*.sql
+*.sql.gz
+
+# Allow tracked database dump
+!latest_db.sql
+
+# Node / Composer
+node_modules/
+vendor/

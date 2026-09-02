@@ -1,0 +1,367 @@
+<?php
+namespace Dashi\Core;
+
+if (!defined('ABSPATH')) exit;
+
+class Notation
+{
+	use NotationDomain;
+	use NotationInfo;
+	use NotationHeavey;
+
+	/**
+	 * forge
+	 *
+	 * @return Void
+	 */
+	public static function forge()
+	{
+		// 「確認済み（30日間非表示）」の受付は admin-post.php でも動くよう常時登録
+		add_action(
+			'admin_post_dashi_cf7_ack_warning',
+			array('\\Dashi\\Core\\Notation', 'handleCf7WarningAcknowledge')
+		);
+
+		// ダッシュボードでのみ環境チェックを表示する
+		if ( ! is_admin()) return;
+		if ( ! get_option('dashi_do_environmental_check')) return;
+		global $pagenow;
+		if ($pagenow !== 'index.php')
+		{
+			return;
+		}
+		$script_name = filter_input(INPUT_SERVER, 'SCRIPT_NAME', FILTER_UNSAFE_RAW);
+		$script_name = is_string($script_name) ? sanitize_text_field(wp_unslash($script_name)) : '';
+		if ($script_name !== '' && substr($script_name, -19) != '/wp-admin/index.php') return;
+
+		// ダッシュボードに記事数を表示する
+		add_filter(
+			'dashboard_glance_items',
+			array('\\Dashi\\Core\\Notation', 'addDashboardGlanceItems')
+		);
+
+		add_action('admin_init', array('\\Dashi\\Core\\Notation', 'registerAdminNotices'));
+
+		// 以降プラグインのチェック
+		include_once(ABSPATH.'wp-admin/includes/plugin.php');
+
+		// pendingやfutureの記事の一覧を表示
+		self::showPendingAndFuture();
+
+		// Contact Form 7 and form domains
+		self::chkDomains();
+	}
+
+	/**
+	 * 編集者以上向けのダッシュボード情報を表示できるか
+	 *
+	 * @return bool
+	 */
+	public static function currentUserCanViewEditorDashboardWidgets()
+	{
+		if (!function_exists('wp_get_current_user')) return false;
+
+		return current_user_can('edit_others_posts');
+	}
+
+	/**
+	 * 管理者向けの通知を表示できるか
+	 *
+	 * @return bool
+	 */
+	public static function currentUserCanViewAdminNotices()
+	{
+		if (!function_exists('wp_get_current_user')) return false;
+
+		return current_user_can('manage_options');
+	}
+
+	/**
+	 * 管理者向けの通知を登録する
+	 *
+	 * @return void
+	 */
+	public static function registerAdminNotices()
+	{
+		if (!self::currentUserCanViewAdminNotices()) return;
+
+		// コンテンツの権限確認
+		self::alertAcl();
+		self::alertFileAcl();
+
+		// 検索エンジンに表示しない設定をしていたら警告する
+		self::alertIfAvoidSearchEngine();
+
+		// WordPressによるphp編集を許可しない
+		self::disallowFileEdit();
+
+		// wp-config.phpがドキュメントルートにある場合パーミッションを確認する
+		// 一階層上にある場合は配慮があるとみなす
+		self::checkPermissionOfWpconfig();
+
+		// Just another WordPress siteを放置しない
+		self::doNotLeaveDefaultDescrition();
+
+		// headのソースチェック
+		self::recommendHtmlCheck();
+
+		// その他のページの目視チェック
+		self::recommendPageCheck();
+
+		// バックアップ体制の確認
+		self::checkBackUp();
+
+		// サーバ側アクセスログの有効性チェック
+		self::checkAccesslog();
+
+		// siteguardのインストールを促す
+		self::recommendSiteguard();
+
+		// コメントを受け付ける設定のサイトかどうか確認する
+		self::checkAllowComment();
+
+		// Hello Worldの削除を促す
+		self::deleteHelloWorld();
+	}
+
+	/**
+	 * alertIfAvoidSearchEngine
+	 *
+	 * @return Void
+	 */
+	private static function alertIfAvoidSearchEngine()
+	{
+		if (get_option('blog_public')) return;
+
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('Now avoid to index search engines.', 'dashi').'</strong></p></div>';
+			});
+	}
+
+	/**
+	 * alertAcl
+	 *
+	 * @return Void
+	 */
+	private static function alertAcl()
+	{
+		if (get_option('dashi_alert_acl')) return;
+
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('Confirmed the existence and validity of login-required content for content managed by WordPress.', 'dashi').'</strong></p></div>';
+			});
+	}
+
+	/**
+	 * alertFileAcl
+	 *
+	 * @return Void
+	 */
+	private static function alertFileAcl()
+	{
+		if (get_option('dashi_alert_fileacl')) return;
+
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('Confirmed the existence and validity of login-required File (direct access).', 'dashi').'</strong></p></div>';
+			});
+	}
+
+	/**
+	 * disallowFileEdit
+	 *
+	 * @return Void
+	 */
+	private static function disallowFileEdit()
+	{
+			if ( ! defined('DISALLOW_FILE_EDIT') || DISALLOW_FILE_EDIT == false)
+			{
+				add_action('admin_notices', function ()
+				{
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo '<div class="message error dashi_error"><p><strong>'.__('Disallow file edit by WordPress. add wp-config.php to <code>define(\'DISALLOW_FILE_EDIT\', true);</code>', 'dashi').'</strong></p></div>';
+				});
+			}
+	}
+
+	/**
+	 * checkPermissionOfWpconfig
+	 *
+	 * @return Void
+	 */
+	private static function checkPermissionOfWpconfig()
+	{
+		$wp_config_path = ABSPATH.'wp-config.php';
+		if (file_exists($wp_config_path) && wp_is_writable($wp_config_path))
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('wp-config.php is writable.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * doNotLeaveDefaultDescrition
+	 *
+	 * @return Void
+	 */
+	private static function doNotLeaveDefaultDescrition()
+	{
+		if (strpos(get_option('blogdescription'), 'WordPress') !== false)
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('Now suppose to be using "Just another WordPress site" as a description.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * recommendHtmlCheck
+	 *
+	 * @return Void
+	 */
+	private static function recommendHtmlCheck()
+	{
+		if ( ! get_option('dashi_head_html_is_ok'))
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('head html is not checked.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * recommendPageCheck
+	 *
+	 * @return Void
+	 */
+	private static function recommendPageCheck()
+	{
+		if ( ! get_option('dashi_utility_pages_are_ok'))
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('utility pages are not checked.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * checkBackUp
+	 *
+	 * @return Void
+	 */
+	private static function checkBackUp()
+	{
+		if ( ! get_option('dashi_backup_is_ok'))
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('backup availability is not checked.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * checkAccesslog
+	 *
+	 * @return Void
+	 */
+	private static function checkAccesslog()
+	{
+		if ( ! get_option('dashi_server_accesslog_is_ok'))
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('access log availability is not checked.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * recommendSiteguard
+	 *
+	 * @return Void
+	 */
+	private static function recommendSiteguard()
+	{
+		if (
+			! get_option('dashi_no_need_security_plugin') &&
+			! is_plugin_active('siteguard/siteguard.php')
+		)
+		{
+				add_action('admin_notices', function ()
+				{
+					/* translators: 1: plugin category, 2: plugin slug example. */
+					echo '<div class="message error dashi_error"><p><strong>'.sprintf(esc_html__('install %1$s plugin ex: %2$s', 'dashi'), 'security', 'siteguard').'</strong></p></div>';
+				});
+		}
+	}
+
+	/**
+	 * checkAllowComment
+	 *
+	 * @return Void
+	 */
+	private static function checkAllowComment()
+	{
+		if (
+			! get_option('dashi_allow_comments') &&
+			(
+				get_option('default_ping_status') == 'open' ||
+				get_option('default_comment_status') == 'open'
+			)
+		)
+		{
+			add_action('admin_notices', function ()
+			{
+				echo '<div class="message error dashi_error"><p><strong>'.esc_html__('If this site is not allowed comments. check please.', 'dashi').'</strong></p></div>';
+			});
+		}
+	}
+
+	/**
+	 * showPendingAndFuture
+	 *
+	 * @return Void
+	 */
+	private static function showPendingAndFuture()
+	{
+		add_action('wp_dashboard_setup', function ()
+		{
+			if (!self::currentUserCanViewEditorDashboardWidgets()) return;
+
+			wp_add_dashboard_widget (
+				'dashi_list_unseen_content',
+				__('Unseen Contents List', 'dashi'),
+				array('\\Dashi\\Core\\Notation', 'unseenContentsList')
+			);
+		});
+	}
+
+	/**
+	 * deleteHelloWorld
+	 *
+	 * @return Void
+	 */
+	private static function deleteHelloWorld()
+	{
+		$is_hello = get_post(1);
+		if (
+			$is_hello &&
+			$is_hello->post_status == 'publish' &&
+			$is_hello->post_title == 'Hello world!'
+		)
+		{
+				add_action('admin_notices', function ()
+				{
+					echo '<div class="message error dashi_error"><p><strong>'.esc_html__('Delete "Hello World!".', 'dashi').'</strong></p></div>';
+				});
+			}
+	}
+}

@@ -1,0 +1,292 @@
+<?php
+namespace Dashi\Core\Posttype;
+
+class Index
+{
+	/**
+	 * 一覧フィルタの select 出力で許可する HTML 属性
+	 *
+	 * @return array<string, array<string, bool>>
+	 */
+	private static function getAllowedSelectHtml()
+	{
+		return array(
+			'select' => array(
+				'name' => true,
+				'id' => true,
+				'class' => true,
+				'multiple' => true,
+			),
+			'option' => array(
+				'value' => true,
+				'selected' => true,
+			),
+		);
+	}
+
+	/**
+	 * addColumn
+	 *
+	 * @return  array
+	 */
+	public static function addColumn ($columns)
+	{
+		if ( ! Input::get('post_type')) return $columns;
+		$class = P::posttype2class(Input::get('post_type'));
+		if ( ! $class) return $columns;
+
+		// インデクスにカラムを足すものを抽出
+		$cs = array();
+		foreach ($class::getFlatCustomFields() as $key => $field)
+		{
+			if (isset($field['add_column']))
+			{
+				$cs[$key] = $field;
+			}
+		}
+		if ( ! $cs) return $columns;
+
+		// 並び替え
+		foreach ($cs as $key => $row)
+		{
+			$add_column[$key]  = $row['add_column'];
+		}
+		array_multisort($add_column, SORT_ASC, $cs);
+
+		// 適用
+		foreach ($cs as $key => $val)
+		{
+			$columns[$key] = isset($val['label']) ? $val['label'] : $key;
+		}
+
+		return $columns;
+	}
+
+	/**
+	 * addCustomColumn
+	 *
+	 * @return  void
+	 */
+	public static function addCustomColumn ($column_name, $post_id)
+	{
+		if ( ! Input::get('post_type')) return;
+		$class = P::posttype2class(Input::get('post_type'));
+		if ( ! $class) return;
+
+		foreach ($class::getFlatCustomFields() as $key => $field)
+		{
+			if ($column_name != $key) continue;
+
+			if (isset($field['type']) && $field['type'] === 'taxonomy')
+			{
+				$terms = wp_get_post_terms( $post_id, $key, array("fields" => "names") );
+				$v = esc_html(join(',', $terms));
+			}
+			// checkbox or multiple
+			else if (
+				isset($field['type']) &&
+				(
+					$field['type'] == 'checkbox' ||
+					($field['type'] == 'select' && isset($field['multiple']))
+				)
+			)
+			{
+				$v = get_post_meta($post_id, $key);
+			}
+			// non array
+			else
+			{
+				$v = get_post_meta($post_id, $key, true);
+			}
+
+			// 値の表示
+			self::displayValue($v, $field);
+		}
+	}
+
+	/**
+	 * displayValue
+	 *
+	 * @param  string $v
+	 * @param  array $field
+	 * @return  void
+	 */
+	private static function displayValue($v, $field)
+	{
+		$options = $field['options'] ?? null;
+		$options = Util::resolveOptions($options);
+
+		// 値がない
+		// 文字列の0が来る場合があるのでstrlen()もかける
+		if (
+			( ! is_array($v) && empty($v) && strlen($v) === 0) ||
+			(is_array($v) && isset($v[0]) && strlen($v[0]) === 0)
+		)
+		{
+				echo esc_html__('None', 'dashi');
+		}
+		// そのまま表示
+		elseif ( ! isset($options) && $v)
+		{
+			echo esc_html($v);
+		}
+		// 配列＆複数
+		elseif (isset($options) && is_array($v))
+		{
+			$arr = array();
+			foreach ($v as $vv)
+			{
+				$arr[] = $options[$vv];
+			}
+			echo esc_html(join(',', $arr));
+		}
+		// 選択式
+		elseif (isset($options) && ! is_array($v))
+		{
+			echo esc_html($options[$v]);
+		}
+	}
+
+	/**
+	 * restrictManagePosts
+	 *
+	 * @return  array
+	 */
+	public static function restrictManagePosts ()
+	{
+		if ( ! Input::get('post_type')) return;
+		$class = P::posttype2class(Input::get('post_type'));
+		if ( ! $class) return;
+
+		// インデクスに抽出を足すもの
+		foreach ($class::getFlatCustomFields() as $key => $field)
+		{
+			if ( ! isset($field['add_restriction']) || ! $field['add_restriction']) continue;
+
+			if (isset($field['type']) && $field['type'] == 'taxonomy')
+			{
+				self::addTaxonomy2Index($field, $key);
+			}
+			else
+			{
+				self::addOption2Index($field, $key);
+			}
+		}
+	}
+
+	/**
+	 * addTaxonomy2Index
+	 *
+	 * @param  array $field
+	 * @param  string $key
+	 * @return  Void
+	 */
+	private static function addTaxonomy2Index ($field, $key)
+	{
+		$label = isset($field['label']) && $field['label'] ? $field['label'] :'タクソノミー指定なし';
+		$html = '<select name="'.$key.'"><option value="">'.$label.'</option>';
+		$terms = get_terms($key);
+		foreach ($terms as $term)
+		{
+			$selected = filter_input(INPUT_GET, $key);
+			$selected_html = $selected == $term->slug ? 'selected="selected"' : '';
+			$html .= '<option value="'.$term->slug.'" '.$selected_html.'>'.$term->name.'</option>';
+		}
+			$html.= '</select>';
+			echo wp_kses($html, self::getAllowedSelectHtml());
+	}
+
+	/**
+	 * addOption2Index
+	 *
+	 * @param  array $field
+	 * @param  string $key
+	 * @return  Void
+	 */
+	private static function addOption2Index ($field, $key)
+	{
+		global $wpdb;
+		$options = array();
+
+		if (isset($field['options']))
+		{
+			$options = $field['options'];
+		}
+		else
+		{
+					foreach (
+						(array) $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- 一覧絞り込み用の値を動的収集する。
+						$wpdb->prepare(
+							'SELECT '.$wpdb->postmeta.'.meta_value FROM '.$wpdb->postmeta.'
+JOIN '.$wpdb->posts.' ON '.$wpdb->postmeta.'.post_id = '.$wpdb->posts.'.ID
+WHERE '.$wpdb->postmeta.'.meta_key = %s
+AND '.$wpdb->posts.'.post_status IN ("publish", "draft", "future", "private")
+GROUP BY '.$wpdb->postmeta.'.meta_value',
+							'handle'
+						)
+					) as $meta_value
+				)
+				{
+					$options[(string) $meta_value] = (string) $meta_value;
+				}
+			}
+
+		$selected = filter_input(INPUT_GET, $key);
+		$html = '';
+		$html .= '<select name="' . esc_attr($key) . '">';
+			$html .= '<option value="">'.sprintf(
+				/* translators: %s: field label */
+				__("All of %s", 'dashi'),
+				isset($field['label']) ? $field['label'] : $key
+			).'</option>';
+		foreach ($options as $value => $text)
+		{
+			if ($value === '') continue;
+			$selected_html = selected($selected, $value, false);
+			$html .= '<option value="'.esc_attr($value).'"'.$selected_html.'>'.esc_html($text).'</option>';
+		}
+			$html .= '</select>';
+			echo wp_kses($html, self::getAllowedSelectHtml());
+	}
+
+	/**
+	 * preGetPosts
+	 *
+	 * @return  array
+	 */
+	public static function preGetPosts ($query)
+	{
+		if ( ! Input::get('post_type')) return $query;
+		$post_type = Input::get('post_type');
+		$class = P::posttype2class($post_type);
+
+		if (
+			$class &&
+			is_admin() &&
+			$query->get('post_type') == $post_type &&
+			$query->is_main_query()
+		)
+		{
+			foreach ($class::getFlatCustomFields() as $key => $field)
+			{
+				if (isset($field['type']) && $field['type'] == 'taxonomy') continue;
+
+				if ( ! isset($field['add_restriction']) || ! $field['add_restriction']) continue;
+				$value = filter_input(INPUT_GET, $key) ?? '';
+				if (strlen($value))
+				{
+					$meta_query = $query->get('meta_query');
+					if ( ! is_array($meta_query)) $meta_query = array();
+					$meta_query['relation'] = 'AND';
+					$meta_query[] = array(
+						'key' => $key,
+						'value' => $value
+					);
+					$query->set('meta_query', $meta_query);
+				}
+			}
+
+			return $query;
+		}
+	}
+}

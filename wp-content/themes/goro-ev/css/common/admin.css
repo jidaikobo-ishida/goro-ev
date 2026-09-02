@@ -1,0 +1,62 @@
+/* http://jigsaw.w3.org/css-validator/ */
+
+/* sample-permalink */
+
+#sample-permalink
+{
+	word-break: break-all;
+}
+
+/* === .tbl === */
+
+.tbl
+{
+	margin: 5px 0 10px !important;
+	width: 100%;
+/*	border-collapse: collapse;*/
+	border-spacing: 0px;
+	border-top: 1px #bbb solid;
+	border-left: 1px #bbb solid;
+}
+*>.tbl
+{
+	width: 100%;
+}
+.tbl th,
+.tbl td
+{
+	text-align: left;
+	padding: 4px 5px;
+	border-bottom: 1px #bbb solid;
+	border-right: 1px #bbb solid;
+}
+*>.tbl th,
+*>.tbl td
+{
+	padding: 2px 5px;
+}
+.tbl th
+{
+	text-align: left;
+	background-color: #f8f8f8;
+	white-space: nowrap;
+	font-weight: bold;
+	color: #111;
+}
+.tbl thead th
+{
+	background-color: #eee;
+	color: #111;
+}
+.tbl *
+{
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.tbl ul,
+.tbl ol
+{
+	padding: 0;
+	margin-left: 25px;
+	margin-right: 0;
+}

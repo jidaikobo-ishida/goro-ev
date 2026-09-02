@@ -4,7 +4,7 @@
 /* */
 
 :root {
-	--basecolor: #fff;
+	--basecolor: #023c76;
 	--maincolor: #229;
 	--subcolor: #66c;
 	--graycolor: #777;
@@ -42,10 +42,10 @@ body:not(.wp-admin) *::after {
 body {
 	font-family: "Noto Sans JP", sans-serif;
 	/* 2 */
-	color: var(--textcolor);
+	color: var(--basecolor);
 	margin: 0 auto;
 	padding: 0;
-	background-color: var(--basecolor);
+	background-color: #fff;
 	word-break: break-all;
 	line-height: 1.75;
 	/* 3 */
@@ -89,6 +89,16 @@ nav ul {
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 0 20px;
+}
+
+.bgblue {
+	background-color: var(--basecolor);
+	padding: var(--margin) 0;
+}
+
+.bgblue,
+.bgblue * {
+	color: #fff;
 }
 
 .flex {
@@ -170,22 +180,56 @@ ul li::marker {
 #container {}
 
 /* header */
-#site-header {}
+#site-header {
+	justify-content: space-between;
+	align-items: center;
+}
 
 #logo {
-	width: 100%;
+	width: fit-content;
 	justify-content: space-between;
 	align-items: center;
 }
 
 /* mainmenu */
-#mainmenu {}
+#mainmenu ul {
+	gap: 0.5rem 1rem;
+}
+
+#mainmenu a {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	text-decoration: none;
+	color: var(--basecolor);
+	gap: 0;
+}
+
+#mainmenu a span.en {
+	font-weight: bold;
+	font-style: normal;
+	font-size: 1.1rem;
+}
+
+#mainmenu a span.jp {
+	font-size: 0.8rem;
+}
 
 /* main_column */
 #site-content {}
 
 /* footer */
 #site-footer {}
+
+#footmenu ul {
+	gap: 0.5rem;
+}
+
+#footmenu li + li {
+	border-left: 1px solid #fff;
+	padding-left: 0.5rem;
+}
 
 .form-row {
 	display: flex;

@@ -34,7 +34,7 @@ $body_class = ''; // IPによる条件分岐を廃止
 	<!-- #container -->
 	<div id="container">
 
-		<header id="site-header">
+		<header id="site-header" class="flex wrapper">
 
 			<?php
 			$blogname = get_bloginfo('name');
@@ -54,7 +54,7 @@ $body_class = ''; // IPによる条件分岐を廃止
 						<li>
 							<a href="<?php echo esc_url($item['link']); ?>">
 								<span class="en"><?php echo esc_html($item['pagename_upper']); ?></span>
-								<span class="ja"><?php echo esc_html($item['title']); ?></span>
+								<span class="jp"><?php echo esc_html($item['menu_title']); ?></span>
 							</a>
 						</li>
 					<?php endforeach; ?>

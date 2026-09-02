@@ -147,11 +147,15 @@ function goro_get_main_pages($slugs = null)
             $page_obj = get_page_by_path($slug);
             if ($page_obj) {
                 $page_id = $page_obj->ID;
+                $cf_menu_title = get_post_meta($page_id, 'menu_title', true);
+                $menu_title = (!empty($cf_menu_title) || $cf_menu_title === '0') ? $cf_menu_title : get_the_title($page_id);
+
                 $cached_pages[$slug] = array(
                     'id'             => $page_id,
                     'slug'           => $slug,
                     'pagename_upper' => strtoupper($slug),
                     'title'          => get_the_title($page_id),
+                    'menu_title'     => $menu_title,
                     'link'           => get_permalink($page_id),
                     'excerpt'        => has_excerpt($page_id) ? get_the_excerpt($page_id) : wp_trim_words(strip_tags($page_obj->post_content), 100),
                     'has_thumbnail'  => has_post_thumbnail($page_id),

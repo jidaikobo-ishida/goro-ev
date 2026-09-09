@@ -6,9 +6,8 @@ get_header();
 <!-- #content -->
 <section id="content">
 <div class="wrapper">
+<div class="inner">
 <?php
-// h1
-echo '<h1>'.esc_html(wp_get_document_title()).'</h1>';
 // echo '<p class="date">'.__('Last updated').'<time datetime="'.date('Y-m-d', strtotime($post->post_date)).'">'.date('Y年n月j日', strtotime($post->post_date)).'</time></p>';
 
 if ( ! post_password_required($post->ID)) :
@@ -17,6 +16,7 @@ else :
 	echo get_the_password_form();
 endif;
 ?>
+</div>
 </div>
 </section><!-- /#content -->
 

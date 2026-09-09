@@ -14,15 +14,14 @@ get_header();
 	<div class="wrapper">
 		<?php
 		$top_slugs = array('move', 'view', 'virtual', 'shop', 'explore');
+		$count = 1;
 		foreach (goro_get_main_pages($top_slugs) as $item) :
+			$img_url = get_theme_file_uri('images/top_content' . $count . '.png');
+			$count++;
 			?>
 			<div class="contentbox">
 				<div class="imgbox">
-					<?php if ($item['has_thumbnail']) : ?>
-						<?php echo get_the_post_thumbnail($item['id'], 'large', array('alt' => esc_attr($item['title']))); ?>
-					<?php else : ?>
-						<img src="ファイル名：<?php echo esc_attr($item['slug']); ?>_thumbとしてください。数字でもいいです。" alt="<?php echo esc_attr($item['title']); ?>">
-					<?php endif; ?>
+					<img src="<?php echo esc_url($img_url); ?>" alt="<?php echo esc_attr($item['title']); ?>">
 				</div>
 				<div class="txtbox">
 					<h3><?php echo esc_html($item['pagename_upper']); ?><span><?php echo esc_html($item['title']); ?></span></h3>
@@ -38,22 +37,20 @@ get_header();
 
 <?php
 $post_type = 'information';
-$items = tare_get_post_stickies($post_type, 5);
+$items = tare_get_post_stickies($post_type, 3);
 if ($items):
 	?>
 	<section id="information">
 		<div class="wrapper">
 			<h2>News & Topics <span>お知らせ・トピックス</span></h2>
-			<ul class="information_list">
+			<ul class="flex c3">
 				<?php foreach ($items as $item): ?>
-					<li>
-						<a href="<?php echo esc_url(get_permalink($item->ID)); ?>">
-							<time class="date" datetime="<?php echo esc_attr($item->post_date); ?>"><?php echo date('Y.m.d', strtotime($item->post_date)); ?></time>
-							<span class="title"><?php echo esc_html($item->post_title); ?></span>
-						</a>
-					</li>
+					<?php include('inc_cardlist.php'); ?>
 				<?php endforeach; ?>
 			</ul>
+			<p class="more-link">
+				<a href="<?php echo esc_url(get_post_type_archive_link('information')); ?>" class="btn-more">お知らせの一覧を見る <span class="arrow">&gt;</span></a>
+			</p>
 		</div>
 	</section>
 <?php endif; ?>

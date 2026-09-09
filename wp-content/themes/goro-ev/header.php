@@ -23,6 +23,10 @@
 	}
 	?>
 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Timmana&display=swap" rel="stylesheet">
+
 	<?php wp_head(); ?>
 </head>
 <?php
@@ -39,28 +43,52 @@ $body_class = ''; // IPによる条件分岐を廃止
 			<?php
 			$blogname = get_bloginfo('name');
 			$logoimg = '<img src="' . get_theme_file_uri('images/logo.png') . '" alt="' . $blogname . '">';
-			$ocbt = '<button id="ocbt"><span class="bar"></span><em>Menu</em><em>Close</em></button>';
 			if (is_front_page() && is_home()):
-				$logo = '<h1 id="logo" class="flex">' . $logoimg . $ocbt . '</h1>';
+				$logo = '<h1 id="logo">' . $logoimg . '</h1>';
 			else:
-				$logo = '<p id="logo" class="flex"><a href="' . esc_url(home_url()) . '">' . $logoimg . '</a>' . $ocbt . '</p>';
+				$logo = '<p id="logo"><a href="' . esc_url(home_url()) . '">' . $logoimg . '</a></p>';
 			endif;
 			echo $logo;
 			?>
 
 			<nav id="mainmenu" aria-label="メインメニュー">
-				<ul>
+				<button id="ocbt" class="sp"><span class="bar"></span><em>メニュー</em><em>とじる</em></button>
+				<div class="spbox">
+					<ul class="menu">
+					<li>
+						<a href="<?php echo esc_url(home_url('/')); ?>"<?php echo (is_front_page() || is_home()) ? ' class="current"' : ''; ?>>
+							<span class="eng">TOP</span>
+							<span class="jp">トップページ</span>
+						</a>
+					</li>
 					<?php foreach (goro_get_main_pages() as $item) : ?>
 						<li>
-							<a href="<?php echo esc_url($item['link']); ?>">
-								<span class="en"><?php echo esc_html($item['pagename_upper']); ?></span>
+							<a href="<?php echo esc_url($item['link']); ?>"<?php echo is_page($item['id']) ? ' class="current"' : ''; ?>>
+								<span class="eng"><?php echo esc_html($item['pagename_upper']); ?></span>
 								<span class="jp"><?php echo esc_html($item['menu_title']); ?></span>
 							</a>
 						</li>
 					<?php endforeach; ?>
-				</ul>
+					</ul>
+				</div>
 			</nav>
 		</header>
+
+		<?php if (is_front_page() && is_home()): ?>
+			<?php include(get_theme_file_path("inc_slideshow.php")); ?>
+		<?php else: ?>
+			<?php $header_info = goro_get_page_header_info(); ?>
+			<?php if ($header_info): ?>
+				<div id="mainvisual">
+					<div class="wrapper">
+						<h1 class="page-title">
+							<span class="eng"><?php echo esc_html($header_info['slug']); ?></span>
+							<span class="jp"><?php echo esc_html($header_info['title']); ?></span>
+						</h1>
+					</div>
+				</div>
+			<?php endif; ?>
+		<?php endif; ?>
 
 		<?php
 		include('inc_breadcrumbs.php');

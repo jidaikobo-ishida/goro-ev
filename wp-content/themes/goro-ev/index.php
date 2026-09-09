@@ -6,10 +6,9 @@ get_header();
 <!-- #content -->
 <section id="content">
 <div class="wrapper">
+<div class="inner">
 
 <?php
-// h1
-echo '<h1>'.esc_html(wp_get_document_title()).'</h1>';
 
 if ($posts):
 ?>
@@ -26,6 +25,7 @@ if ($posts):
 
 <?php endif; ?>
 
+</div>
 </div>
 </section><!-- /#content -->
 

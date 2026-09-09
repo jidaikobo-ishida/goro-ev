@@ -24,3 +24,27 @@
 {
 	display: none !important;
 }
+
+/* レガシーメディアアップローダー（Thickbox）の一覧段落ち修正 */
+.media-upload-form .media-item,
+#media-items .media-item {
+	clear: both !important;
+	overflow: hidden !important;
+	display: block !important;
+	min-height: 70px;
+}
+
+.media-item .pinkynail {
+	float: left !important;
+	margin: 10px 14px 10px 10px !important;
+}
+
+.media-item .filename {
+	overflow: hidden !important;
+}
+
+.media-item .describe-toggle-on,
+.media-item .describe-toggle-off {
+	float: right !important;
+	margin: 14px !important;
+}

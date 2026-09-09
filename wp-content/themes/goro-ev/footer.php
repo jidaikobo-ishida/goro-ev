@@ -1,3 +1,6 @@
+	<div id="gopagetop" class="wrapper">
+		<a href="#container"><img src="<?php echo esc_url(get_theme_file_uri('images/pagetop.svg')); ?>" alt="ページの先頭へ" width="50" height="50"></a>
+	</div>
 </main><!-- /#main -->
 
 <?php get_sidebar(); ?>

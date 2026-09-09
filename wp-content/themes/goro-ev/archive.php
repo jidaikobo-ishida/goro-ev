@@ -10,11 +10,10 @@ get_header();
 <!-- #content -->
 <section id="content">
 	<div class="wrapper">
+		<div class="inner">
 
 		<?php
-		// h1
-		echo '<h1>' . esc_html(wp_get_document_title()) . '</h1>' . "\n";
-		echo $posts ? "\t" . '<a href="' . esc_url(get_bloginfo('rss2_url')) . '?post_type=' . esc_attr($posts[0]->post_type) . '"><img src="' . esc_url(get_stylesheet_directory_uri()) . '/images/rss/feed-icon-14x14.png" alt="RSS"></a>' : '';
+				echo $posts ? "\t" . '<a href="' . esc_url(get_bloginfo('rss2_url')) . '?post_type=' . esc_attr($posts[0]->post_type) . '"><img src="' . esc_url(get_stylesheet_directory_uri()) . '/images/rss/feed-icon-14x14.png" alt="RSS"></a>' : '';
 
 		if ($posts):
 
@@ -33,6 +32,7 @@ get_header();
 		endif;
 		?>
 
+		</div>
 	</div>
 </section><!-- /#content -->
 

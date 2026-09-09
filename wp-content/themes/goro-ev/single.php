@@ -6,9 +6,8 @@ get_header();
 <!-- #content -->
 <section id="content">
 <div class="wrapper">
+<div class="inner">
 <?php
-// h1
-echo '<h1>'.esc_html(wp_get_document_title()).'</h1>';
 /*
 echo '<p class="date">';
 echo __('Last updated');
@@ -24,6 +23,7 @@ else :
 	echo get_the_password_form();
 endif;
 ?>
+</div>
 </div>
 </section><!-- /#content -->
 

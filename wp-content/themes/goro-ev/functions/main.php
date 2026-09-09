@@ -177,3 +177,54 @@ function goro_get_main_pages($slugs = null)
     }
     return $result;
 }
+
+/**
+ * 下層ページ用のメインビジュアル見出し情報（slug, title）を取得
+ *
+ * @return array|null array('slug' => '...', 'title' => '...')
+ */
+function goro_get_page_header_info()
+{
+    if (is_front_page() || is_home()) {
+        return null;
+    }
+
+    $slug = '';
+    $title = '';
+
+    if (is_page()) {
+        global $post;
+        $slug = strtoupper($post->post_name);
+        $cf_menu_title = get_post_meta($post->ID, 'menu_title', true);
+        $title = (!empty($cf_menu_title) || $cf_menu_title === '0') ? $cf_menu_title : get_the_title();
+    } elseif (is_post_type_archive('information')) {
+        $slug = 'INFORMATION';
+        $title = 'お知らせ・トピックス';
+    } elseif (is_single()) {
+        global $post;
+        if ($post->post_type === 'information') {
+            $slug = 'INFORMATION';
+            $title = 'お知らせ・トピックス';
+        } else {
+            $slug = strtoupper($post->post_type);
+            $title = get_the_title();
+        }
+    } elseif (is_archive()) {
+        $slug = 'ARCHIVE';
+        $title = get_the_archive_title();
+    } elseif (is_search()) {
+        $slug = 'SEARCH';
+        $title = '検索結果';
+    } elseif (is_404()) {
+        $slug = '404 NOT FOUND';
+        $title = 'ページが見つかりません';
+    } else {
+        $slug = '';
+        $title = wp_get_document_title();
+    }
+
+    return array(
+        'slug'  => $slug,
+        'title' => $title,
+    );
+}

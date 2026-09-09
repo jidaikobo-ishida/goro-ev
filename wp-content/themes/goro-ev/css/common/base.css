@@ -97,7 +97,7 @@ kbd /* キーボードのキー */
 .forscreenreader,
 .skip
 {
-	position: absolute;
+	position: absolute !important;
 }
 
 .hl:not(:focus),
@@ -265,7 +265,6 @@ cite[lang$="ja"]
 	font-style: normal;
 }
 
-.en,
 .en,
 cite[lang$="en"],
 .foreign

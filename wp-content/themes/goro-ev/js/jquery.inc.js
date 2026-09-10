@@ -6,11 +6,21 @@ $('.wpcf7-form').each( function() {
 });
 
 $('#ocbt').on('click', function(){
-	$('body').toggleClass('menuopen');
+	var isOpen = $('body').toggleClass('menuopen').hasClass('menuopen');
+	$(this).attr('aria-expanded', isOpen ? 'true' : 'false');
 });
 
 $('#mainmenu a').on('click', function(){
 	$('body').removeClass('menuopen');
+	$('#ocbt').attr('aria-expanded', 'false');
+});
+
+// Escキー押下でメニューを閉じる
+$(document).on('keydown', function(e) {
+	if (e.key === 'Escape' && $('body').hasClass('menuopen')) {
+		$('body').removeClass('menuopen');
+		$('#ocbt').attr('aria-expanded', 'false').trigger('focus');
+	}
 });
 
 // ==========================================================================

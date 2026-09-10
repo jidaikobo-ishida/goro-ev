@@ -228,3 +228,32 @@ function goro_get_page_header_info()
         'title' => $title,
     );
 }
+
+/**
+ * 外部リンク（target="_blank"）にスクリーンリーダー用の通知テキストを自動付与
+ * JIS X 8341-3 達成基準 3.2.5 対応
+ */
+add_filter('the_content', function ($content) {
+    if (empty($content) || !is_string($content)) {
+        return $content;
+    }
+
+    $pattern = '/<a\s+([^>]*target=["\']_blank["\'][^>]*)>(.*?)<\/a>/is';
+    return preg_replace_callback($pattern, function ($matches) {
+        $attrs = $matches[1];
+        $inner = $matches[2];
+
+        // 既に通知文言が含まれている場合は二重付与しない
+        if (strpos($inner, "新しいタブ") !== false || strpos($inner, "別ウィンドウ") !== false || strpos($inner, "別タブ") !== false) {
+            return $matches[0];
+        }
+
+        // rel属性に noopener noreferrer がなければ追加
+        if (strpos($attrs, "rel=") === false) {
+            $attrs .= ' rel="noopener noreferrer"';
+        }
+
+        return "<a " . $attrs . ">" . $inner . "<span class=\"skip\">（新しいタブで開きます）</span></a>";
+    }, $content);
+}, 20);
+

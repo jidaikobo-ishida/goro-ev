@@ -273,6 +273,20 @@ nav ul {
 	left: -9000px;
 }
 
+.skip:focus {
+	position: fixed !important;
+	top: 1rem;
+	left: 1rem;
+	z-index: 99999;
+	background-color: var(--basecolor);
+	color: #fff;
+	padding: 0.75rem 1.5rem;
+	border-radius: var(--radius);
+	font-weight: bold;
+	text-decoration: underline;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
 .nd {
 	display: none !important;
 }

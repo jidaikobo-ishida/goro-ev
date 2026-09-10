@@ -10,6 +10,7 @@ get_header();
 <!-- #content -->
 <section id="content">
 	<div class="wrapper">
+		<h2 class="skip">お知らせ一覧</h2>
 		<?php if (have_posts()): ?>
 
 			<ul class="flex c3">

@@ -35,6 +35,8 @@ $body_class = ''; // IPによる条件分岐を廃止
 
 <body <?php body_class(); ?>>
 
+	<a href="#main" class="skip">本文へスキップ</a>
+
 	<!-- #container -->
 	<div id="container">
 
@@ -52,8 +54,8 @@ $body_class = ''; // IPによる条件分岐を廃止
 			?>
 
 			<nav id="mainmenu" aria-label="メインメニュー">
-				<button id="ocbt" class="sp"><span class="bar"></span><em>メニュー</em><em>とじる</em></button>
-				<div class="spbox">
+				<button id="ocbt" class="sp" type="button" aria-expanded="false" aria-controls="mainmenu-spbox" aria-label="メニューを開閉する"><span class="bar"></span><em>メニュー</em><em>とじる</em></button>
+				<div id="mainmenu-spbox" class="spbox">
 					<ul class="menu">
 					<li>
 						<a href="<?php echo esc_url(home_url('/')); ?>"<?php echo (is_front_page() || is_home()) ? ' class="current"' : ''; ?>>

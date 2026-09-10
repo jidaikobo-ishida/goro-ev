@@ -40,6 +40,31 @@ if (!empty($slides)):
 			continue;
 		}
 
+		// リンクがある場合は、画像自体の説明ではなくリンク先タイトルを最優先でaltに設定（WCAG 2.4.4 / JIS X 8341-3 機能画像基準準拠）
+		if (!empty($url)) {
+			$target_id = 0;
+			if (strpos($url, "http") === 0) {
+				$target_id = url_to_postid($url);
+			} else {
+				$target_id = url_to_postid(home_url($url));
+				if (!$target_id) {
+					$page_obj = get_page_by_path(trim(parse_url($url, PHP_URL_PATH), "/"));
+					if ($page_obj) {
+						$target_id = $page_obj->ID;
+					}
+				}
+			}
+
+			if ($target_id) {
+				$cf_menu = get_post_meta($target_id, "menu_title", true);
+				$img_alt = (!empty($cf_menu) || $cf_menu === "0") ? $cf_menu : get_the_title($target_id);
+			} elseif (empty($img_alt)) {
+				$img_alt = $title;
+			}
+		} elseif (empty($img_alt)) {
+			$img_alt = $title;
+		}
+
 		$slide_items[] = array(
 			'id'    => $slide->ID,
 			'title' => $title,

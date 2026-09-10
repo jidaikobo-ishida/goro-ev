@@ -26,7 +26,7 @@ get_header();
 				<div class="txtbox">
 					<h3><?php echo esc_html($item['pagename_upper']); ?><span><?php echo esc_html($item['title']); ?></span></h3>
 					<p><?php echo nl2br(esc_html($item['excerpt'])); ?></p>
-					<p><a href="<?php echo esc_url($item['link']); ?>">詳しく見る</a></p>
+					<p><a href="<?php echo esc_url($item['link']); ?>" aria-label="<?php echo esc_attr($item['pagename_upper'] . '：' . $item['title']); ?>について詳しく見る">詳しく見る<span class="skip">（<?php echo esc_html($item['title']); ?>について）</span></a></p>
 				</div>
 			</div>
 			<?php

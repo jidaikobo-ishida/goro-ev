@@ -725,6 +725,10 @@ section#information {
 	display: block;
 }
 
+#about figure img {
+	border-radius: 0;
+}
+
 #about p:has(img) {
 	display: flex;
 	gap: var(--margin);

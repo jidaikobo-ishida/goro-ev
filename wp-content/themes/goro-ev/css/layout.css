@@ -1025,8 +1025,8 @@ section#information {
    1. メインメニュー周り (ブレークポイント: 730px)
    ========================================================================== */
 
-/* タブレット時: 925px〜731px (ヘッダー2段組・PCメニュー横並び) */
-@media all and (max-width: 925px) and (min-width: 731px) {
+/* タブレット時: 935px〜731px (ヘッダー2段組・PCメニュー横並び) */
+@media all and (max-width: 935px) and (min-width: 731px) {
 	#site-header {
 		flex-direction: column;
 		align-items: flex-start;

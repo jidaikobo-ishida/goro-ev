@@ -140,7 +140,7 @@ function goro_get_main_pages($slugs = null)
     static $cached_pages = null;
 
     if ($cached_pages === null) {
-        $all_slugs = array('move', 'view', 'virtual', 'shop', 'explore', 'access');
+        $all_slugs = array('move', 'view', 'virtual', 'shop', 'explore', 'access', 'media');
         $cached_pages = array();
 
         foreach ($all_slugs as $slug) {
